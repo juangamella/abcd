@@ -214,6 +214,7 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
         """Change of variables to compute posterior probabilities of parents,
         given the Parents of the target in each DAG and the posterior
         probability of each DAG"""
+        Parents = np.array(Parents)
         unique = []
         parents_posterior = []
         for parents in Parents:
