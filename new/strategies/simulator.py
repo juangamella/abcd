@@ -211,19 +211,19 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
     # A-ICP paper: Compute parents posterior
 
     def compute_parents_posterior(Parents, posterior):
-    """Change of variables to compute posterior probabilities of parents,
-    given the Parents of the target in each DAG and the posterior
-    probability of each DAG"""
-    unique = []
-    parents_posterior = []
-    for parents in Parents:
-        if parents in unique:
-            pass
-        else:
-            unique.append(parents)
-            posterior_prob = np.sum(posterior[Parents == parents])
-            parents_posterior.append(posterior_prob)
-    return (unique, np.array(parents_posterior))
+        """Change of variables to compute posterior probabilities of parents,
+        given the Parents of the target in each DAG and the posterior
+        probability of each DAG"""
+        unique = []
+        parents_posterior = []
+        for parents in Parents:
+            if parents in unique:
+                pass
+            else:
+                unique.append(parents)
+                posterior_prob = np.sum(posterior[Parents == parents])
+                parents_posterior.append(posterior_prob)
+        return (unique, np.array(parents_posterior))
 
     dag_collection = [graph_utils.cov2dag(gdag.covariance, dag) for dag in dags]
     posterior = graph_utils.dag_posterior(dag_collection, all_samples, intervention_set, interventions)
