@@ -31,6 +31,8 @@ parser.add_argument('--folder', type=str, help='Folder containing the DAGs')
 parser.add_argument('--strategy', type=str, help='Strategy to use')
 parser.add_argument('--target-allowed', type=int, help='Whether or not the specified target node can be intervened on')
 
+parser.add_argument('--starting-samples', type=int, help='Number of initial interventional samples') # A-ICP paper: To compare the effect of different observational sample sizes
+
 
 args = parser.parse_args()
 
@@ -39,9 +41,10 @@ amats = [np.loadtxt(os.path.join(DATA_FOLDER, args.folder, 'dags', 'dag%d' % i, 
 dags = [cd.GaussDAG.from_amat(amat) for amat in amats]
 nnodes = len(dags[0].nodes)
 target = args.target if args.target is not None else int(np.ceil(nnodes/2) - 1)
+starting_samples = args.starting_samples if args.starting_samples is not None else NUM_STARTING_SAMPLES
 
 SIM_CONFIG = SimulationConfig(
-    starting_samples=NUM_STARTING_SAMPLES,
+    starting_samples = starting_samples
     n_samples=args.samples,
     n_batches=args.batches,
     max_interventions=args.max_interventions,
