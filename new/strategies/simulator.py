@@ -225,10 +225,13 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
                 parents_posterior.append(posterior_prob)
         return (unique, np.array(parents_posterior))
 
+    # Compute posterior probabilities of each DAG
     dag_collection = [graph_utils.cov2dag(gdag.covariance, dag) for dag in dags]
-    posterior = graph_utils.dag_posterior(dag_collection, all_samples, intervention_set, interventions)
+    dag_posterior = graph_utils.dag_posterior(dag_collection, all_samples, intervention_set, interventions)
+    # Compute parents of target in each DAG
     dag_parents = [dag.parents[simulator_config.target] for dag in dags]
-    (parents, parents_posterior) = compute_parents_posterior(dag_parents, posterior)
+    # Compute parents' posterior probabilities
+    (parents, parents_posterior) = compute_parents_posterior(dag_parents, dag_posterior)
 
     truth = gdag.parents[simulator_config.target]
     print(posterior)
@@ -237,6 +240,6 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
     print(parents, parents_posterior)
     
     import pickle    
-    pickle.dump([truth, parents, parents_posterior], open("parents_posterior.pickle", "wb"))
+    pickle.dump([truth, parents, parents_posterior, dag_posterior, dag_parents], open("parents_posterior.pickle", "wb"))
     
     
