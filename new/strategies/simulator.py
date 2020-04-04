@@ -217,6 +217,9 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
     dag_parents = [dag.parents[simulator_config.target] for dag in dags]
     print(dag_parents)
 
-    pickle.dump([posterior, dag_parents], open("parents_posterior.pickle", "wb"))
+    truth = gdag.parents(simulator_config.target)
+    print(truth)
+    
+    pickle.dump([truth, posterior, dag_parents], open("parents_posterior.pickle", "wb"))
     
     
