@@ -210,7 +210,7 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
 
     # Juan: Compute posterior
 
-    posterior = dag_posterior(dags, all_samples, intervention_set, interventions)
+    posterior = graph_utils.dag_posterior(dags, all_samples, intervention_set, interventions)
     print(posterior)
     dag_parents = [dag.parents[simulator_config.target] for dag in dags]
     print(dag_parents)
