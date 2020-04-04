@@ -210,14 +210,13 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
 
     # Juan: Compute posterior
 
+    import pickle
     dag_collection = [graph_utils.cov2dag(gdag.covariance, dag) for dag in dags]
     posterior = graph_utils.dag_posterior(dag_collection, all_samples, intervention_set, interventions)
     print(posterior)
     dag_parents = [dag.parents[simulator_config.target] for dag in dags]
     print(dag_parents)
-    parent_posterior = {}
-    # Change of variables to compute posterior over parents
-    for i, parents in enumerate(dag_parents):
-        parent_posterior[parents] = parent_posterior.get(parents, 0) + posterior[i]
-    print(parent_posterior)
+
+    pickle.dump([posterior, dag_parents], open("parents_posterior.pickle", "wb"))
+    
     
