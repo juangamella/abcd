@@ -100,7 +100,6 @@ def descendant_functionals(target, nodes):
 
     return [get_descendant_functional(node) for node in nodes if node != target]
 
-
 def get_strategy(strategy, dag):
     if strategy == 'budgeted_exp_design':
         base_dag = cd.DAG(nodes=set(dag.nodes), arcs=dag.arcs)
@@ -192,7 +191,7 @@ def simulate_(tup):
     print('SIMULATING FOR DAG: %d' % num)
     print('Folder:', folder)
     print('Size of MEC:', len(dag.cpdag().all_dags()))
-    simulate(get_strategy(args.strategy, gdag), SIM_CONFIG, gdag, folder, save_gies=False)
+    simulate(get_strategy(args.strategy, gdag), SIM_CONFIG, gdag, folder, save_gies=True) # Juan: Was false before
 
 
 with Pool(cpu_count()-1) as p:

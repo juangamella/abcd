@@ -208,3 +208,15 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
         for d, amat in enumerate(amats):
             np.save(os.path.join(final_gies_dags_path, 'dag%d.npy' % d), amat)
 
+    # Juan: Compute posterior
+
+    posterior = dag_posterior(dags, all_samples, intervention_set, interventions)
+    print(posterior)
+    dag_parents = [dag.parents[simulator_config.target] for dag in dags]
+    print(dag_parents)
+    parent_posterior = {}
+    # Change of variables to compute posterior over parents
+    for i, parents in enumerate(dag_parents):
+        parent_posterior[parents] = parent_posterior.get(parents, 0) + posterior[i]
+    print(parent_posterior)
+    
