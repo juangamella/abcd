@@ -44,7 +44,7 @@ target = args.target if args.target is not None else int(np.ceil(nnodes/2) - 1)
 starting_samples = args.starting_samples if args.starting_samples is not None else NUM_STARTING_SAMPLES
 
 SIM_CONFIG = SimulationConfig(
-    starting_samples = starting_samples
+    starting_samples = starting_samples,
     n_samples=args.samples,
     n_batches=args.batches,
     max_interventions=args.max_interventions,
