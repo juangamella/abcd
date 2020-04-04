@@ -234,7 +234,7 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
     (parents, parents_posterior) = compute_parents_posterior(dag_parents, dag_posterior)
 
     truth = gdag.parents[simulator_config.target]
-    print(posterior)
+    print(dag_posterior)
     print(dag_parents)
     print(truth)
     print(parents, parents_posterior)
