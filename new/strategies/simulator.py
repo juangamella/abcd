@@ -62,7 +62,7 @@ class GenerationConfig:
                     dags.append(dag)
         else:
             dags = [graph_utils.generate_DAG(self.n_nodes, type_=self.graph_type) for _ in range(self.n_dags)]
-        dag_arcs = [{(i, j): 1 for i, j in dag.arcs} for dag in dags]
+        dag_arcs = [{(i, j): np.random.uniform() for i, j in dag.arcs} for dag in dags] # A-ICP paper: Generate random weights
         gdags = [cd.GaussDAG(nodes=list(range(self.n_nodes)), arcs=arcs) for arcs in dag_arcs]
 
         print('=== Saving DAGs ===')
