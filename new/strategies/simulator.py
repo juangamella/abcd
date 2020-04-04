@@ -208,18 +208,35 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
         for d, amat in enumerate(amats):
             np.save(os.path.join(final_gies_dags_path, 'dag%d.npy' % d), amat)
 
-    # Juan: Compute posterior
+    # A-ICP paper: Compute parents posterior
 
-    import pickle
+    def compute_parents_posterior(Parents, posterior):
+    """Change of variables to compute posterior probabilities of parents,
+    given the Parents of the target in each DAG and the posterior
+    probability of each DAG"""
+    unique = []
+    parents_posterior = []
+    for parents in Parents:
+        if parents in unique:
+            pass
+        else:
+            unique.append(parents)
+            posterior_prob = np.sum(posterior[Parents == parents])
+            parents_posterior.append(posterior_prob)
+    return (unique, np.array(parents_posterior))
+
     dag_collection = [graph_utils.cov2dag(gdag.covariance, dag) for dag in dags]
     posterior = graph_utils.dag_posterior(dag_collection, all_samples, intervention_set, interventions)
-    print(posterior)
     dag_parents = [dag.parents[simulator_config.target] for dag in dags]
-    print(dag_parents)
+    (parents, parents_posterior) = compute_parents_posterior(dag_parents, posterior)
 
     truth = gdag.parents[simulator_config.target]
+    print(posterior)
+    print(dag_parents)
     print(truth)
+    print(parents, parents_posterior)
     
-    pickle.dump([truth, posterior, dag_parents], open("parents_posterior.pickle", "wb"))
+    import pickle    
+    pickle.dump([truth, parents, parents_posterior], open("parents_posterior.pickle", "wb"))
     
     
