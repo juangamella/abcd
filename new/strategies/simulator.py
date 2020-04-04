@@ -215,7 +215,7 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
     # A-ICP paper: Compute parents posterior
 
     # Check all interventions were on a single variable (i.e. k=1)
-    print(all_samples.keys)
+    print(all_samples.keys())
     print(gdag.means)
     print(gdag.variances)
     def compute_parents_posterior(Parents, posterior):
