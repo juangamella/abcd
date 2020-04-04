@@ -217,8 +217,8 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
     # Check all interventions were on a single variable (i.e. k=1)
     print(all_samples.keys())
     print(simulator_config.max_interventions)
-    print(gdag.means)
-    print(gdag.variances)
+    print(gdag.means())
+    print(gdag.variances())
     def compute_parents_posterior(Parents, posterior):
         """Change of variables to compute posterior probabilities of parents,
         given the Parents of the target in each DAG and the posterior
