@@ -64,11 +64,15 @@ class GenerationConfig:
             dags = [graph_utils.generate_DAG(self.n_nodes, type_=self.graph_type) for _ in range(self.n_dags)]
         dag_arcs = [{(i, j): np.random.uniform() for i, j in dag.arcs} for dag in dags] # A-ICP paper: Generate random weights
         gdags = [cd.GaussDAG(nodes=list(range(self.n_nodes)), arcs=arcs) for arcs in dag_arcs]
-
         print('=== Saving DAGs ===')
         for i, gdag in enumerate(gdags):
             os.makedirs(os.path.join(DATA_FOLDER, folder, 'dags', 'dag%d' % i), exist_ok=True)
             np.savetxt(os.path.join(DATA_FOLDER, folder, 'dags', 'dag%d' % i, 'adjacency.txt'), gdag.to_amat())
+            # A-ICP paper: Sample means/variances uniformly at random from (0,1)
+            means = np.random.uniform(size=len(gdag.nodes))
+            variances = np.random.uniform(size=len(gdag.nodes))
+            np.savetxt(os.path.join(DATA_FOLDER, folder, 'dags', 'dag%d' % i, 'means.txt'), means)
+            np.savetxt(os.path.join(DATA_FOLDER, folder, 'dags', 'dag%d' % i, 'variances.txt'), variances)
         print('=== Saved ===')
         return gdags
 

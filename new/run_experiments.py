@@ -37,8 +37,10 @@ parser.add_argument('--starting-samples', type=int, help='Number of initial inte
 args = parser.parse_args()
 
 ndags = len(os.listdir(os.path.join(DATA_FOLDER, args.folder, 'dags')))
-amats = [np.loadtxt(os.path.join(DATA_FOLDER, args.folder, 'dags', 'dag%d' % i, 'adjacency.txt')) for i in range(ndags)]
-dags = [cd.GaussDAG.from_amat(amat) for amat in amats]
+amats = [np.loadtxt(os.path.join(DATA_FOLDER, args.folder, 'dags', 'dag%d' % i, 'adjacency.txt')) for i in range(ndags)] 
+means = [np.loadtxt(os.path.join(DATA_FOLDER, args.folder, 'dags', 'dag%d' % i, 'means.txt')) for i in range(ndags)] # A-ICP paper
+variances = [np.loadtxt(os.path.join(DATA_FOLDER, args.folder, 'dags', 'dag%d' % i, 'variances.txt')) for i in range(ndags)] # A-ICP paper
+dags = [cd.GaussDAG.from_amat(amat, means=mean, variances=variance) for (amat,mean,variance) in zip(amats, means, variances)] # A-ICP paper: Allow variances/means different from 1/0, sampled at random
 nnodes = len(dags[0].nodes)
 target = args.target if args.target is not None else int(np.ceil(nnodes/2) - 1)
 starting_samples = args.starting_samples if args.starting_samples is not None else NUM_STARTING_SAMPLES
