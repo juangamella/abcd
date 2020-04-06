@@ -196,9 +196,20 @@ def simulate_(tup):
     print('SIMULATING FOR DAG: %d' % num)
     print('Folder:', folder)
     print('Size of MEC:', len(dag.cpdag().all_dags()))
-    simulate(get_strategy(args.strategy, gdag), SIM_CONFIG, gdag, folder, save_gies=True) # A-ICP paper: set save_gies to True
+    simulate(get_strategy(args.strategy, gdag), SIM_CONFIG, gdag, folder, save_gies=True, dag_num = num) # A-ICP paper: set save_gies to True
 
 
 with Pool(cpu_count()-1) as p:
-    p.map(simulate_, zip(dags, folders, range(len(dags))))
+    result = p.map(simulate_, zip(dags, folders, range(len(dags))))
+
+# A-ICP paper: Store posterior results
+import pickle
+import time
+
+filename = "pp_%d" % time.time()
+for (k,v) in vars(SIM_CONFIG).items():
+    filename += "_%s:%s" % (k,v)
+filename += ".pickle"
+
+pickle.dump(result, open(filename, "wb"))
 

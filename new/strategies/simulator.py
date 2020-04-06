@@ -106,7 +106,7 @@ class IterationData:
     precision_matrix: np.ndarray
 
 
-def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_dags_final=100, save_gies=True):
+def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_dags_final=100, save_gies=True, dag_num = None):
     if os.path.exists(os.path.join(strategy_folder, 'samples')):
         return
 
@@ -248,7 +248,11 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
     print(truth)
     print(parents, parents_posterior)
     
-    import pickle    
-    pickle.dump([truth, parents, parents_posterior, dag_posterior, dag_parents], open("parents_posterior.pickle", "wb"))
+    import pickle
+    filename = "pp_dag_%d.pickle" % dag_num if dag_num is not None else "pp_dag_X.pickle"
+    path = os.path.join(strategy_folder, filename)
+    pickle.dump([truth, parents, parents_posterior, dag_posterior, dag_parents], open(path, "wb"))
+
+    return (truth, parents, parents_posterior)
     
     
