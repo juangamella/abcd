@@ -182,11 +182,10 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
     print(intervention_set)
 
     posteriors = [] # A-ICP paper: Store posterior over parents after each batch
+    posteriors.append(compute_parents_posterior(simulator_config.target, gdags, all_samples, intervention_set, interventions)) # A-ICP paper: Store posteriors over obs. data
     
     # === RUN STRATEGY ON EACH BATCH
     for batch in range(simulator_config.n_batches):
-        # A-ICP paper: Update posterior over parents
-        posteriors.append(compute_parents_posterior(simulator_config.target, gdags, all_samples, intervention_set, interventions))
         print('Batch %d with %s' % (batch, simulator_config))
         batch_folder = os.path.join(strategy_folder, 'dags_batch=%d/' % batch)
         os.makedirs(batch_folder, exist_ok=True)
@@ -212,6 +211,9 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
             iv_node = intervention_set[intv_ix]
             new_samples = gdag.sample_interventional({iv_node: interventions[intv_ix]}, nsamples)
             all_samples[iv_node] = np.vstack((all_samples[iv_node], new_samples))
+
+        # A-ICP paper: Update posterior over parents
+        posteriors.append(compute_parents_posterior(simulator_config.target, gdags, all_samples, intervention_set, interventions))
 
     samples_folder = os.path.join(strategy_folder, 'samples')
     os.makedirs(samples_folder, exist_ok=True)
