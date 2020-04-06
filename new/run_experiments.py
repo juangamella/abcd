@@ -196,7 +196,7 @@ def simulate_(tup):
     print('SIMULATING FOR DAG: %d' % num)
     print('Folder:', folder)
     print('Size of MEC:', len(dag.cpdag().all_dags()))
-    return simulate(get_strategy(args.strategy, gdag), SIM_CONFIG, gdag, folder, save_gies=True, dag_num = num) # A-ICP paper: set save_gies to True
+    return simulate(get_strategy(args.strategy, gdag), SIM_CONFIG, gdag, folder, save_gies=False, dag_num = num) # A-ICP paper: set save_gies to True
 
 
 print("\n\nNumber of workers: %d\n\n" % (cpu_count() - 1))

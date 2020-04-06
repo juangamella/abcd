@@ -425,7 +425,7 @@ def create_info_gain_strategy(n_boot, graph_functionals, enum_combos=False):
             selected_combo_ix = random.choice(best_combo_ixs)
             selected_interventions = combo2selected_interventions[selected_combo_ix]
 
-        return selected_interventions
+        return (gauss_dags, selected_interventions) # A-ICP paper: Return GIES samples here
 
     return info_gain_strategy
 

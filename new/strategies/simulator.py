@@ -14,6 +14,25 @@ import itertools as itr
 
 MAX_MEC_SIZE = 25
 
+# A-ICP paper: Compute parents posterior
+def compute_parents_posterior(target, gdags, all_samples, intervention_set, interventions):
+    """Change of variables to compute posterior probabilities of parents,
+    given the Parents of the target in each DAG and the posterior
+    probability of each DAG"""
+
+    Parents = np.array([gdag.parents[target] for gdag in gdags])
+    posterior = graph_utils.dag_posterior(gdags, all_samples, intervention_set, interventions)
+    unique = []
+    parents_posterior = []
+    for parents in Parents:
+        if parents in unique:
+            pass
+        else:
+            unique.append(parents)
+            posterior_prob = np.sum(posterior[Parents == parents])
+            parents_posterior.append(posterior_prob)
+    return (unique, np.array(parents_posterior))
+
 
 def get_component_dag(nnodes, p, nclusters=3):
     cluster_cutoffs = [int(nnodes/nclusters)*i for i in range(nclusters+1)]
@@ -106,14 +125,14 @@ class IterationData:
     precision_matrix: np.ndarray
 
 
-def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_dags_final=100, save_gies=True, dag_num = None):
+def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_dags_final=100, save_gies=False, dag_num = None):
     if os.path.exists(os.path.join(strategy_folder, 'samples')):
         return
 
     # === SAVE SIMULATION META-INFORMATION
     os.makedirs(strategy_folder, exist_ok=True)
     simulator_config.save(strategy_folder)
-
+    
     # === SAMPLE SOME OBSERVATIONAL DATA TO START WITH
     n_nodes = len(gdag.nodes)
     all_samples = {i: np.zeros([0, n_nodes]) for i in range(n_nodes)}
@@ -128,6 +147,7 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
         graph_utils._write_data(all_samples, initial_samples_path, initial_interventions_path)
         graph_utils.run_gies_boot(num_bootstrap_dags_final, initial_samples_path, initial_interventions_path, initial_gies_dags_path)
         amats, dags = graph_utils._load_dags(initial_gies_dags_path, delete=True)
+        gdags = [graph_utils.cov2dag(cov_mat, dag) for dag in dags] # A-ICP paper: Gaussian dags sampled by GIES over obs. data
         for d, amat in enumerate(amats):
             np.save(os.path.join(initial_gies_dags_path, 'dag%d.npy' % d), amat)
 
@@ -163,8 +183,12 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
         del interventions[simulator_config.target]
     print(intervention_set)
 
+    posteriors = [] # A-ICP paper: Store posterior over parents after each batch
+    
     # === RUN STRATEGY ON EACH BATCH
     for batch in range(simulator_config.n_batches):
+        # A-ICP paper: Update posterior over parents
+        posteriors.append(compute_parents_posterior(simulator_config.target, gdags, all_samples, intervention_set, interventions))
         print('Batch %d with %s' % (batch, simulator_config))
         batch_folder = os.path.join(strategy_folder, 'dags_batch=%d/' % batch)
         os.makedirs(batch_folder, exist_ok=True)
@@ -179,8 +203,7 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
             batch_folder=batch_folder,
             precision_matrix=precision_matrix
         )
-        recommended_interventions = strategy(iteration_data)
-        print(recommended_interventions.keys()) # A-ICP paper: Debugging
+        (gdags, recommended_interventions) = strategy(iteration_data)
         if not sum(recommended_interventions.values()) == iteration_data.n_samples / iteration_data.n_batches:
             raise ValueError('Did not return correct amount of samples')
         rec_interventions_nonzero = {intv_ix for intv_ix, ns in recommended_interventions.items() if ns != 0}
@@ -215,14 +238,14 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
 
     # A-ICP paper: Compute parents posterior
 
-    # Check all interventions were on a single variable (i.e. k=1)
-    print(gdag.means())
-    print(gdag.variances)
-    def compute_parents_posterior(Parents, posterior):
+    # A-ICP paper: Compute parents posterior
+    def compute_parents_posterior(target, gdags, all_samples, intervention_set, interventions):
         """Change of variables to compute posterior probabilities of parents,
         given the Parents of the target in each DAG and the posterior
         probability of each DAG"""
-        Parents = np.array(Parents)
+        
+        Parents = np.array([gdag.parents[target] for gdag in gdags])
+        posterior = graph_utils.dag_posterior(gdags, all_samples, intervention_set, interventions)
         unique = []
         parents_posterior = []
         for parents in Parents:
