@@ -53,7 +53,7 @@ SIM_CONFIG = SimulationConfig(
     max_interventions=args.max_interventions,
     strategy=args.strategy,
     intervention_strength=args.intervention_strength,
-    # target=target, A-ICP paper
+    target=0, # A-ICP paper: Will be set for each DAG below
     intervention_type=args.intervention_type if args.intervention_type is not None else 'gauss',
     target_allowed=args.target_allowed != 0 if args.target_allowed is not None else True
 )
