@@ -94,7 +94,7 @@ def descendant_functionals(target, nodes):
 
     return [get_descendant_functional(node) for node in nodes if node != target]
 
-def get_strategy(strategy, dag):
+def get_strategy(strategy, dag, target):
     if strategy == 'budgeted_exp_design':
         base_dag = cd.DAG(nodes=set(dag.nodes), arcs=dag.arcs)
         dag_collection = [cd.DAG(nodes=set(dag.nodes), arcs=arcs) for arcs in base_dag.cpdag().all_dags()]
@@ -196,7 +196,7 @@ def simulate_(tup):
         intervention_type=args.intervention_type if args.intervention_type is not None else 'gauss',
         target_allowed=args.target_allowed != 0 if args.target_allowed is not None else True
     )
-    return simulate(get_strategy(args.strategy, gdag), SIM_CONFIG, gdag, folder, save_gies=False, dag_num = num)
+    return simulate(get_strategy(args.strategy, gdag, targets[num]), SIM_CONFIG, gdag, folder, save_gies=False, dag_num = num)
 
 
 print("\n\nNumber of workers: %d\n\n" % (cpu_count() - 1))
