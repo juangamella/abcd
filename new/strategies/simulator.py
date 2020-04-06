@@ -139,17 +139,14 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
     all_samples[-1] = gdag.sample(simulator_config.starting_samples)
     precision_matrix = np.linalg.inv(all_samples[-1].T @ all_samples[-1] / len(all_samples[-1]))
 
-    # === GET GIES SAMPLES GIVEN JUST OBSERVATIONAL DATA
-    if save_gies:
-        initial_samples_path = os.path.join(strategy_folder, 'initial_samples.csv')
-        initial_interventions_path = os.path.join(strategy_folder, 'initial_interventions')
-        initial_gies_dags_path = os.path.join(strategy_folder, 'initial_dags/')
-        graph_utils._write_data(all_samples, initial_samples_path, initial_interventions_path)
-        graph_utils.run_gies_boot(num_bootstrap_dags_final, initial_samples_path, initial_interventions_path, initial_gies_dags_path)
-        amats, dags = graph_utils._load_dags(initial_gies_dags_path, delete=True)
-        gdags = [graph_utils.cov2dag(cov_mat, dag) for dag in dags] # A-ICP paper: Gaussian dags sampled by GIES over obs. data
-        for d, amat in enumerate(amats):
-            np.save(os.path.join(initial_gies_dags_path, 'dag%d.npy' % d), amat)
+    # A-ICP paper: Get initial samples returned by GIES
+    initial_samples_path = os.path.join(strategy_folder, 'initial_samples.csv')
+    initial_interventions_path = os.path.join(strategy_folder, 'initial_interventions')
+    initial_gies_dags_path = os.path.join(strategy_folder, 'initial_dags/')
+    graph_utils._write_data(all_samples, initial_samples_path, initial_interventions_path)
+    graph_utils.run_gies_boot(num_bootstrap_dags_final, initial_samples_path, initial_interventions_path, initial_gies_dags_path)
+    amats, dags = graph_utils._load_dags(initial_gies_dags_path, delete=True)
+    gdags = [graph_utils.cov2dag(cov_mat, dag) for dag in dags] # A-ICP paper: Gaussian dags sampled by GIES over obs. data
 
     # === SPECIFY INTERVENTIONAL DISTRIBUTIONS BASED ON EACH NODE'S STANDARD DEVIATION
     intervention_set = list(range(n_nodes))
