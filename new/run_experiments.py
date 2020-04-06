@@ -39,10 +39,11 @@ args = parser.parse_args()
 ndags = len(os.listdir(os.path.join(DATA_FOLDER, args.folder, 'dags')))
 amats = [np.loadtxt(os.path.join(DATA_FOLDER, args.folder, 'dags', 'dag%d' % i, 'adjacency.txt')) for i in range(ndags)] 
 means = [np.loadtxt(os.path.join(DATA_FOLDER, args.folder, 'dags', 'dag%d' % i, 'means.txt')) for i in range(ndags)] # A-ICP paper
-variances = [np.loadtxt(os.path.join(DATA_FOLDER, args.folder, 'dags', 'dag%d' % i, 'variances.txt')) for i in range(ndags)] # A-ICP paper
+variances = [np.loadtxt(os.path.join(DATA_FOLDER, args.folder, 'dags', 'dag%d' % i, 'variances.txt')) for i in range(ndags)] # A-ICP pape
+targets = [int(np.loadtxt(os.path.join(DATA_FOLDER, args.folder, 'dags', 'dag%d' % i, 'target.txt'))) for i in range(ndags)] # A-ICP paper
 dags = [cd.GaussDAG.from_amat(amat, means=mean, variances=variance) for (amat,mean,variance) in zip(amats, means, variances)] # A-ICP paper: Allow variances/means different from 1/0, sampled at random
 nnodes = len(dags[0].nodes)
-target = args.target if args.target is not None else int(np.ceil(nnodes/2) - 1)
+# target = args.target if args.target is not None else int(np.ceil(nnodes/2) - 1) A-ICP paper
 starting_samples = args.starting_samples if args.starting_samples is not None else NUM_STARTING_SAMPLES
 
 SIM_CONFIG = SimulationConfig(
@@ -52,7 +53,7 @@ SIM_CONFIG = SimulationConfig(
     max_interventions=args.max_interventions,
     strategy=args.strategy,
     intervention_strength=args.intervention_strength,
-    target=target,
+    # target=target, A-ICP paper
     intervention_type=args.intervention_type if args.intervention_type is not None else 'gauss',
     target_allowed=args.target_allowed != 0 if args.target_allowed is not None else True
 )
@@ -196,7 +197,9 @@ def simulate_(tup):
     print('SIMULATING FOR DAG: %d' % num)
     print('Folder:', folder)
     print('Size of MEC:', len(dag.cpdag().all_dags()))
-    return simulate(get_strategy(args.strategy, gdag), SIM_CONFIG, gdag, folder, save_gies=False, dag_num = num) # A-ICP paper: set save_gies to True
+    config = SIM_CONFIG.copy()
+    config.target = targets[num]
+    return simulate(get_strategy(args.strategy, gdag), config, gdag, folder, save_gies=False, dag_num = num) # A-ICP paper: set save_gies to True
 
 
 print("\n\nNumber of workers: %d\n\n" % (cpu_count() - 1))

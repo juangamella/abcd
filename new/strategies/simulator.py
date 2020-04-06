@@ -239,6 +239,6 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
     # A-ICP paper: Compute parents posterior
 
     truth = gdag.parents[simulator_config.target]
-    return (truth, posteriors)
+    return (truth, simulator_config.target, posteriors)
     
     
