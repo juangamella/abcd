@@ -46,18 +46,6 @@ nnodes = len(dags[0].nodes)
 # target = args.target if args.target is not None else int(np.ceil(nnodes/2) - 1) A-ICP paper
 starting_samples = args.starting_samples if args.starting_samples is not None else NUM_STARTING_SAMPLES
 
-SIM_CONFIG = SimulationConfig(
-    starting_samples = starting_samples,
-    n_samples=args.samples,
-    n_batches=args.batches,
-    max_interventions=args.max_interventions,
-    strategy=args.strategy,
-    intervention_strength=args.intervention_strength,
-    target=0, # A-ICP paper: Will be set for each DAG below
-    intervention_type=args.intervention_type if args.intervention_type is not None else 'gauss',
-    target_allowed=args.target_allowed != 0 if args.target_allowed is not None else True
-)
-
 
 def parent_functionals(target, nodes):
     def get_parent_functional(parent):
@@ -197,9 +185,18 @@ def simulate_(tup):
     print('SIMULATING FOR DAG: %d' % num)
     print('Folder:', folder)
     print('Size of MEC:', len(dag.cpdag().all_dags()))
-    config = SIM_CONFIG.copy()
-    config.target = targets[num]
-    return simulate(get_strategy(args.strategy, gdag), config, gdag, folder, save_gies=False, dag_num = num) # A-ICP paper: set save_gies to True
+    SIM_CONFIG = SimulationConfig(
+        starting_samples = starting_samples,
+        n_samples=args.samples,
+        n_batches=args.batches,
+        max_interventions=args.max_interventions,
+        strategy=args.strategy,
+        intervention_strength=args.intervention_strength,
+        target=targets[num], # A-ICP paper set a different target for each DAG
+        intervention_type=args.intervention_type if args.intervention_type is not None else 'gauss',
+        target_allowed=args.target_allowed != 0 if args.target_allowed is not None else True
+    )
+    return simulate(get_strategy(args.strategy, gdag), SIM_CONFIG, gdag, folder, save_gies=False, dag_num = num)
 
 
 print("\n\nNumber of workers: %d\n\n" % (cpu_count() - 1))
@@ -210,6 +207,18 @@ with Pool(cpu_count()-1) as p:
 # A-ICP paper: Store posterior results
 import pickle
 import time
+
+SIM_CONFIG = SimulationConfig(
+    starting_samples = starting_samples,
+    n_samples=args.samples,
+    n_batches=args.batches,
+    max_interventions=args.max_interventions,
+    strategy=args.strategy,
+    intervention_strength=args.intervention_strength,
+    target=0,
+    intervention_type=args.intervention_type if args.intervention_type is not None else 'gauss',
+    target_allowed=args.target_allowed != 0 if args.target_allowed is not None else True
+)
 
 filename = "pp_%d" % time.time()
 for (k,v) in vars(SIM_CONFIG).items():
