@@ -238,44 +238,7 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
 
     # A-ICP paper: Compute parents posterior
 
-    # A-ICP paper: Compute parents posterior
-    def compute_parents_posterior(target, gdags, all_samples, intervention_set, interventions):
-        """Change of variables to compute posterior probabilities of parents,
-        given the Parents of the target in each DAG and the posterior
-        probability of each DAG"""
-        
-        Parents = np.array([gdag.parents[target] for gdag in gdags])
-        posterior = graph_utils.dag_posterior(gdags, all_samples, intervention_set, interventions)
-        unique = []
-        parents_posterior = []
-        for parents in Parents:
-            if parents in unique:
-                pass
-            else:
-                unique.append(parents)
-                posterior_prob = np.sum(posterior[Parents == parents])
-                parents_posterior.append(posterior_prob)
-        return (unique, np.array(parents_posterior))
-
-    # Compute posterior probabilities of each DAG
-    dag_collection = [graph_utils.cov2dag(gdag.covariance, dag) for dag in dags]
-    dag_posterior = graph_utils.dag_posterior(dag_collection, all_samples, intervention_set, interventions)
-    # Compute parents of target in each DAG
-    dag_parents = [dag.parents[simulator_config.target] for dag in dags]
-    # Compute parents' posterior probabilities
-    (parents, parents_posterior) = compute_parents_posterior(dag_parents, dag_posterior)
-
     truth = gdag.parents[simulator_config.target]
-    print(dag_posterior)
-    print(dag_parents)
-    print(truth)
-    print(parents, parents_posterior)
-    
-    import pickle
-    filename = "pp_dag_%d.pickle" % dag_num if dag_num is not None else "pp_dag_X.pickle"
-    path = os.path.join(strategy_folder, filename)
-    pickle.dump([truth, parents, parents_posterior, dag_posterior, dag_parents], open(path, "wb"))
-
-    return (truth, parents, parents_posterior)
+    return (truth, posteriors)
     
     
