@@ -199,6 +199,8 @@ def simulate_(tup):
     simulate(get_strategy(args.strategy, gdag), SIM_CONFIG, gdag, folder, save_gies=True, dag_num = num) # A-ICP paper: set save_gies to True
 
 
+print("Number of workers: %d" % cpu_count() - 1)
+    
 with Pool(cpu_count()-1) as p:
     result = p.map(simulate_, zip(dags, folders, range(len(dags))))
 
