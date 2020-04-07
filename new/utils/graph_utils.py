@@ -41,7 +41,7 @@ def RAND_RANGE():
 
 
 def run_gies_boot(n_boot, data_path, intervention_path, dags_path, delete=False):
-    print("Running GIES")
+#    print("Running GIES")
     # delete all DAGS in TEMP FOLDER
     if delete:
         try:
@@ -54,7 +54,7 @@ def run_gies_boot(n_boot, data_path, intervention_path, dags_path, delete=False)
     rfile = os.path.join(config.TOP_FOLDER, 'utils', 'run_gies.r')
     r_command = 'Rscript {} {} {} {} {}'.format(rfile, n_boot, data_path, intervention_path, dags_path)
     os.system(r_command)
-    print("Done")
+#    print("Done")
 
 
 def _write_data(data, samples_path, interventions_path):
