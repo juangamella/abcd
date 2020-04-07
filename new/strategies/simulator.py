@@ -179,7 +179,7 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
     if not simulator_config.target_allowed:
         del intervention_set[simulator_config.target]
         del interventions[simulator_config.target]
-    print(intervention_set)
+    #print(intervention_set)
 
     posteriors = [] # A-ICP paper: Store posterior over parents after each batch
     posteriors.append(compute_parents_posterior(simulator_config.target, gdags, all_samples, intervention_set, interventions)) # A-ICP paper: Store posteriors over obs. data

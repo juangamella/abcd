@@ -13,7 +13,7 @@ import operator as op
 
 # A-ICP paper: Remove progress bar when running on cluster
 
-DEBUG_OUTPUT=True
+DEBUG_OUTPUT=False
 
 def iterator(iterator):
     if DEBUG_OUTPUT:
