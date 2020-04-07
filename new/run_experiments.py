@@ -184,7 +184,8 @@ def simulate_(tup):
     dag = cd.DAG(nodes=set(gdag.nodes), arcs=gdag.arcs)
     print('SIMULATING FOR DAG: %d' % num)
     print('Folder:', folder)
-    print('Size of MEC:', len(dag.cpdag().all_dags()))
+    mec_size = len(dag.cpdag().all_dags())
+    print('Size of MEC:', mec_size)
     SIM_CONFIG = SimulationConfig(
         starting_samples = starting_samples,
         n_samples=args.samples,
@@ -196,7 +197,7 @@ def simulate_(tup):
         intervention_type=args.intervention_type if args.intervention_type is not None else 'gauss',
         target_allowed=args.target_allowed != 0 if args.target_allowed is not None else True
     )
-    return simulate(get_strategy(args.strategy, gdag, targets[num]), SIM_CONFIG, gdag, folder, save_gies=False, dag_num = num)
+    return (mec_size,) + simulate(get_strategy(args.strategy, gdag, targets[num]), SIM_CONFIG, gdag, folder, save_gies=False, dag_num = num)
 
 
 print("\n\nNumber of workers: %d\n\n" % (cpu_count() - 1))
