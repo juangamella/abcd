@@ -10,9 +10,13 @@ import random
 from tqdm import tqdm
 import operator as op
 
+
 # A-ICP paper: Remove progress bar when running on cluster
-def iterator(iterator, pbar=True):
-    if pbar:
+
+DEBUG_OUTPUT=True
+
+def iterator(iterator):
+    if DEBUG_OUTPUT:
         return tqdm(iterator, total=len(list(iterator)))
     else:
         return iterator
@@ -319,7 +323,7 @@ def create_info_gain_strategy(n_boot, graph_functionals, enum_combos=False):
             functional_matrix[dag_ix, functional_ix] = functional(dag)
 
         # === FOR EACH GRAPH, OBTAIN SAMPLES FOR EACH INTERVENTION THAT'LL BE USED TO BUILD UP THE HYPOTHETICAL DATASET
-        print('COLLECTING DATA POINTS')
+        print('COLLECTING DATA POINTS') if DEBUG_OUTPUT else None
         datapoints = [
             [
                 dag.sample_interventional({intervened_node: intervention}, nsamples=nsamples)
@@ -328,7 +332,7 @@ def create_info_gain_strategy(n_boot, graph_functionals, enum_combos=False):
             for dag in gauss_dags
         ]
 
-        print('CALCULATING LOG PDFS')
+        print('CALCULATING LOG PDFS') if DEBUG_OUTPUT else None
         datapoint_ixs = list(range(nsamples))
         logpdfs = xr.DataArray(
             np.zeros([n_boot, len(iteration_data.intervention_set), n_boot, nsamples]),
@@ -349,7 +353,7 @@ def create_info_gain_strategy(n_boot, graph_functionals, enum_combos=False):
                         interventions={iteration_data.intervention_set[intv_ix]: intervention}
                     )
 
-        print('COLLECTING SAMPLES')
+        print('COLLECTING SAMPLES') if DEBUG_OUTPUT else None
         if not enum_combos:
             current_logpdfs = np.zeros([n_boot, n_boot])
             selected_interventions = defaultdict(int)
