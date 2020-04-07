@@ -188,7 +188,10 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
     for batch in range(simulator_config.n_batches):
         print('Batch %d with %s' % (batch, simulator_config))
         batch_folder = os.path.join(strategy_folder, 'dags_batch=X') # A-ICP paper: Overwrite batch folder on each iteration
-        os.remove(batch_folder)
+        try:
+            os.rmdir(batch_folder)
+        except:
+            pass
         os.makedirs(batch_folder, exist_ok=True)
         iteration_data = IterationData(
             current_data=all_samples,
