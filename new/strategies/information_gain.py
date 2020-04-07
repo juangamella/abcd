@@ -77,7 +77,7 @@ def create_info_gain_strategy_dag_collection(dag_collection, graph_functionals, 
                 }
             )
             for outer_dag_ix in iterator(range(len(dag_collection))):
-                for intv_ix, intervention in iterator(enumerate(iteration_data.interventions):
+                for intv_ix, intervention in iterator(enumerate(iteration_data.interventions)):
                     for inner_dag_ix, inner_dag in enumerate(gauss_dags):
                         loc = dict(outer_dag=outer_dag_ix, intervention_ix=intv_ix, inner_dag=inner_dag_ix)
                         gdag1 = gauss_dags[outer_dag_ix]
