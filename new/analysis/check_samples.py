@@ -3,7 +3,6 @@ import yaml
 import xarray as xr
 import numpy as np
 from config import DATA_FOLDER
-from tqdm import tqdm
 
 
 def count_samples(dataset, strat_names, ks, bs, ns):
@@ -30,7 +29,7 @@ def count_samples(dataset, strat_names, ks, bs, ns):
         }
     )
 
-    for dag_num in tqdm(range(n_dags), total=n_dags):
+    for dag_num in range(n_dags):
         dag_folder = os.path.join(dags_folder, 'dag%d' % dag_num)
         for strat_fn in filter(os.path.isdir, map(lambda f: os.path.join(dag_folder, f), os.listdir(dag_folder))):
             strat_name, n_str, b_str, k_str = strat_fn.split(',')
