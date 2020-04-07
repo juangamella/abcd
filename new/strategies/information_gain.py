@@ -10,6 +10,13 @@ import random
 from tqdm import tqdm
 import operator as op
 
+# A-ICP paper: Remove progress bar when running on cluster
+def iterator(iterator, pbar=True):
+    if pbar:
+        return tqdm(iterator, total=len(list(iterator)))
+    else:
+        return iterator
+    
 
 def binary_entropy(probs):
     probs = probs.copy()
@@ -69,8 +76,8 @@ def create_info_gain_strategy_dag_collection(dag_collection, graph_functionals, 
                     'inner_dag': list(range(len(dag_collection))),
                 }
             )
-            for outer_dag_ix in tqdm(range(len(dag_collection)), total=len(dag_collection)):
-                for intv_ix, intervention in tqdm(enumerate(iteration_data.interventions), total=len(iteration_data.interventions)):
+            for outer_dag_ix in iterator(range(len(dag_collection))):
+                for intv_ix, intervention in iterator(enumerate(iteration_data.interventions):
                     for inner_dag_ix, inner_dag in enumerate(gauss_dags):
                         loc = dict(outer_dag=outer_dag_ix, intervention_ix=intv_ix, inner_dag=inner_dag_ix)
                         gdag1 = gauss_dags[outer_dag_ix]
@@ -103,9 +110,8 @@ def create_info_gain_strategy_dag_collection(dag_collection, graph_functionals, 
                 }
             )
 
-            for outer_dag_ix in tqdm(range(len(dag_collection)), total=len(dag_collection)):
-                for intv_ix, intervention in tqdm(enumerate(iteration_data.interventions),
-                                                  total=len(iteration_data.interventions)):
+            for outer_dag_ix in iterator(range(len(dag_collection))):
+                for intv_ix, intervention in iterator(enumerate(iteration_data.interventions)):
                     for inner_dag_ix, inner_dag in enumerate(gauss_dags):
                         loc = dict(outer_dag=outer_dag_ix, intervention_ix=intv_ix, inner_dag=inner_dag_ix)
                         logpdfs.loc[loc] = inner_dag.logpdf(
@@ -128,7 +134,7 @@ def create_info_gain_strategy_dag_collection(dag_collection, graph_functionals, 
 
         if verbose:
             print('ALLOCATING SAMPLES')
-        for minibatch_num, mbsize in tqdm(zip(range(num_minibatches), mbsizes), total=num_minibatches):
+        for minibatch_num, mbsize in iterator(zip(range(num_minibatches), mbsizes)):
             intervention_scores = np.zeros(len(iteration_data.interventions))
             intervention_logpdfs = np.zeros([len(iteration_data.interventions), len(dag_collection), len(dag_collection)])
             nonzero_interventions = [intv_ix for intv_ix, ns in selected_interventions.items() if ns != 0]
@@ -216,8 +222,8 @@ def create_info_gain_strategy_dag_collection_enum(dag_collection, graph_function
             }
         )
 
-        for outer_dag_ix in tqdm(range(len(dag_collection)), total=len(dag_collection)):
-            for intv_ix, intervention in tqdm(enumerate(iteration_data.interventions), total=len(iteration_data.interventions)):
+        for outer_dag_ix in iterator(range(len(dag_collection))):
+            for intv_ix, intervention in iterator(enumerate(iteration_data.interventions)):
                 for inner_dag_ix, inner_dag in enumerate(gauss_dags):
                     loc = dict(outer_dag=outer_dag_ix, intervention_ix=intv_ix, inner_dag=inner_dag_ix)
                     logpdfs.loc[loc] += inner_dag.logpdf(
@@ -238,7 +244,7 @@ def create_info_gain_strategy_dag_collection_enum(dag_collection, graph_function
             intv_ix2tmp_ix = {i_ix: t_ix for t_ix, i_ix in tmp_ix2intv_ix.items()}
 
             last_intervention_score = 0
-            for sample_num in tqdm(range(nsamples), total=nsamples):
+            for sample_num in iterator(range(nsamples)):
                 intervention_scores = np.zeros(len(combo))
                 intervention_logpdfs = np.zeros([len(combo), len(dag_collection), len(dag_collection)])
 
@@ -334,8 +340,8 @@ def create_info_gain_strategy(n_boot, graph_functionals, enum_combos=False):
                 'datapoint': datapoint_ixs
             }
         )
-        for outer_dag_ix in tqdm(range(n_boot), total=n_boot):
-            for intv_ix, intervention in tqdm(enumerate(iteration_data.interventions), total=len(iteration_data.interventions)):
+        for outer_dag_ix in iterator(range(n_boot)):
+            for intv_ix, intervention in iterator(enumerate(iteration_data.interventions)):
                 for inner_dag_ix, inner_dag in enumerate(gauss_dags):
                     loc = dict(outer_dag=outer_dag_ix, intervention_ix=intv_ix, inner_dag=inner_dag_ix)
                     logpdfs.loc[loc] = inner_dag.logpdf(
@@ -347,7 +353,7 @@ def create_info_gain_strategy(n_boot, graph_functionals, enum_combos=False):
         if not enum_combos:
             current_logpdfs = np.zeros([n_boot, n_boot])
             selected_interventions = defaultdict(int)
-            for sample_num in tqdm(range(nsamples), total=nsamples):
+            for sample_num in iterator(range(nsamples)):
                 intervention_scores = np.zeros(len(iteration_data.interventions))
                 intervention_logpdfs = np.zeros([len(iteration_data.interventions), n_boot, n_boot])
                 for intv_ix in range(len(iteration_data.interventions)):
