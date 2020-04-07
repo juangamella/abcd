@@ -60,6 +60,7 @@ def create_info_gain_strategy(n_boot, graph_functionals, enum_combos=False):
             }
         )
         for outer_dag_ix in range(n_boot):
+            print("DAG %d" % outer_dag_ix) if DEBUG_OUTPUT else None
             for intv_ix, intervention in enumerate(iteration_data.interventions):
                 for inner_dag_ix, inner_dag in enumerate(gauss_dags):
                     loc = dict(outer_dag=outer_dag_ix, intervention_ix=intv_ix, inner_dag=inner_dag_ix)
