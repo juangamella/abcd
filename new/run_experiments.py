@@ -226,7 +226,8 @@ for (k,v) in vars(SIM_CONFIG).items():
     filename += "_%s:%s" % (k,v)
 filename += ".pickle"
 
-print("Done. Saving results in %s" % filename)
+print("Saving results in %s..." % filename, end=" ")
 
 pickle.dump(result, open(filename, "wb"))
 
+print("done.")
