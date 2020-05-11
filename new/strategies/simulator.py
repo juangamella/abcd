@@ -171,7 +171,7 @@ def simulate(strategy, simulator_config, gdag, strategy_folder, num_bootstrap_da
         ]
     elif simulator_config.intervention_type == 'gauss':
         interventions = [
-            cd.GaussIntervention(mean=0, variance=simulator_config.intervention_strength) for _ in intervention_set
+            cd.GaussIntervention(mean=simulator_config.intervention_strength, variance=1) for _ in intervention_set
         ]
     elif simulator_config.intervention_type == 'constant':
         interventions = [
