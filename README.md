@@ -34,7 +34,7 @@ pip install pyaml tqdm xarray causaldag
 
 ### Executing experiments
 
-The dataset used to run the experiments is in data/dataset_3. Unfortunately, running the code renders the dataset unusable for other runs, so we have to copy it. The "master" dataset is in directory `dataset_3`. For the experiments (a total of 12), we copy it 12 times, plus one to check everything works:
+The dataset used to run the experiments is in data/dataset_3. Unfortunately, running the code renders the dataset unusable for other runs, so we have to copy it (I like to keep `dataset_3` as the "master copy"). For the experiments (a total of 12), we copy it 12 times, plus one to check everything works:
 
 ```
 cd data/
@@ -82,7 +82,7 @@ python run_experiments.py -n 500 -b 50 -k 1 --boot 100 -s 7 --folder dataset_3_1
 
 **Parallelization**
 
-The code automatically runs on as many cores as are made available to it. In Euler I would run each job with 50 cores. Perhaps this is not possible in the SfS machines.
+The code automatically runs on as many cores as are made available to it. In Euler I would run each job with 48 cores. Perhaps this is not possible in the SfS machines.
 
 **Results**
 
