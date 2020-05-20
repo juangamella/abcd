@@ -80,4 +80,14 @@ python run_experiments.py -n 500 -b 50 -k 1 --boot 100 -s 7 --folder dataset_3_1
 python run_experiments.py -n 500 -b 50 -k 1 --boot 100 -s 7 --folder dataset_3_11 --strategy entropy --starting-samples 1000
 ```
 
-The results will be outputted into the 
+**Parallelization**
+
+The code automatically runs on as many cores as are made available to it. In Euler I would run each job with 50 cores. Perhaps this is not possible in the SfS machines.
+
+**Results**
+
+The results are pickled into the `new` directory. The filenames contain a timestamp and the parameters used, eg.
+
+```
+pp_1589260274_n_samples:500_n_batches:50_max_interventions:1_strategy:entropy_intervention_strength:5.0_starting_samples:100_target:0_intervention_type:gauss_target_allowed:True.pickle
+```
