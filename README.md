@@ -1,6 +1,6 @@
 # ABCD vs A-ICP comparison
 
-This repo is forked from [agrawalraj/active_learning](https://github.com/agrawalraj/active_learning). It contains minor changes to the code to get it to run and retrieve results for the experiments comparing ABCD to [A-ICP](https://github.com/agrawalraj/juangamella/aicp).
+This repo is forked from [agrawalraj/active_learning](https://github.com/agrawalraj/active_learning). It contains minor changes to the code to get it to run and retrieve results for the experiments comparing ABCD to [A-ICP](https://github.com/agrawalraj/juangamella/aicp). Changes to the original code are marked with the comment `# A-ICP paper:*`.
 
 ## Dependencies
 
