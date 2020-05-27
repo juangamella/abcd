@@ -38,7 +38,7 @@ pip install pyaml tqdm xarray causaldag
 
 ## Reproducing the results
 
-The dataset used to run the experiments is generated through the code in the A-ICP [implementation](https://github.com/juangamella/aicp) (see *Reproducing experiments* in the README), and then copied to the `new/data/` directory. The dataset is a directory structure (here `dataset/`). Unfortunately, running the code renders the dataset unusable for other runs, so we have to copy it (I like to keep `dataset/` as the "master copy"). For the experiments (a total of 12), we copy it 12 times, plus one to test everything works:
+The dataset used to run the experiments is generated through the code in the A-ICP [implementation](https://github.com/juangamella/aicp) (see *Reproducing experiments* in that repo's README), and then copied to the `new/data/` directory. The dataset is a directory structure (here `dataset/`). Unfortunately, running the code renders the dataset unusable for other runs, so we have to copy it (I like to keep `dataset/` as the "master copy"). For the experiments (a total of 12), we copy it 12 times, plus one to test everything works:
 
 ```
 cd data/
