@@ -36,7 +36,7 @@ pip install pyaml tqdm xarray causaldag
 
 ## Executing experiments
 
-The dataset used to run the experiments is generated through the code in the A-ICP [implementation](https://github.com/juangamella/aicp) (see *Reproducing experiments* in the README). The dataset is a directory structure (here `dataset/`). Unfortunately, running the code renders the dataset unusable for other runs, so we have to copy it (I like to keep `dataset/` as the "master copy"). For the experiments (a total of 12), we copy it 12 times, plus one to check everything works:
+The dataset used to run the experiments is generated through the code in the A-ICP [implementation](https://github.com/juangamella/aicp) (see *Reproducing experiments* in the README), and then copied to the `new/data/` directory. The dataset is a directory structure (here `dataset/`). Unfortunately, running the code renders the dataset unusable for other runs, so we have to copy it (I like to keep `dataset/` as the "master copy"). For the experiments (a total of 12), we copy it 12 times, plus one to test everything works:
 
 ```
 cd data/
@@ -84,7 +84,7 @@ python run_experiments.py -n 500 -b 50 -k 1 --boot 100 -s 7 --folder dataset_11 
 
 **Parallelization**
 
-The code automatically runs on as many cores as are made available to it. In Euler I would run each job with 48 cores. Perhaps this is not possible in the SfS machines.
+The code automatically runs on as many cores as are made available to it, minus one.
 
 **Results**
 
