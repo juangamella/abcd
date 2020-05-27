@@ -31,26 +31,20 @@ parser.add_argument('--folder', type=str, help='Folder containing the DAGs')
 parser.add_argument('--strategy', type=str, help='Strategy to use')
 parser.add_argument('--target-allowed', type=int, help='Whether or not the specified target node can be intervened on')
 
+parser.add_argument('--starting-samples', type=int, help='Number of initial interventional samples') # A-ICP paper: To compare the effect of different observational sample sizes
+
 
 args = parser.parse_args()
 
 ndags = len(os.listdir(os.path.join(DATA_FOLDER, args.folder, 'dags')))
-amats = [np.loadtxt(os.path.join(DATA_FOLDER, args.folder, 'dags', 'dag%d' % i, 'adjacency.txt')) for i in range(ndags)]
-dags = [cd.GaussDAG.from_amat(amat) for amat in amats]
+amats = [np.loadtxt(os.path.join(DATA_FOLDER, args.folder, 'dags', 'dag%d' % i, 'adjacency.txt')) for i in range(ndags)] 
+means = [np.loadtxt(os.path.join(DATA_FOLDER, args.folder, 'dags', 'dag%d' % i, 'means.txt')) for i in range(ndags)] # A-ICP paper
+variances = [np.loadtxt(os.path.join(DATA_FOLDER, args.folder, 'dags', 'dag%d' % i, 'variances.txt')) for i in range(ndags)] # A-ICP pape
+targets = [int(np.loadtxt(os.path.join(DATA_FOLDER, args.folder, 'dags', 'dag%d' % i, 'target.txt'))) for i in range(ndags)] # A-ICP paper
+dags = [cd.GaussDAG.from_amat(amat, means=mean, variances=variance) for (amat,mean,variance) in zip(amats, means, variances)] # A-ICP paper: Allow variances/means different from 1/0, sampled at random
 nnodes = len(dags[0].nodes)
-target = args.target if args.target is not None else int(np.ceil(nnodes/2) - 1)
-
-SIM_CONFIG = SimulationConfig(
-    starting_samples=NUM_STARTING_SAMPLES,
-    n_samples=args.samples,
-    n_batches=args.batches,
-    max_interventions=args.max_interventions,
-    strategy=args.strategy,
-    intervention_strength=args.intervention_strength,
-    target=target,
-    intervention_type=args.intervention_type if args.intervention_type is not None else 'gauss',
-    target_allowed=args.target_allowed != 0 if args.target_allowed is not None else True
-)
+# target = args.target if args.target is not None else int(np.ceil(nnodes/2) - 1) A-ICP paper
+starting_samples = args.starting_samples if args.starting_samples is not None else NUM_STARTING_SAMPLES
 
 
 def parent_functionals(target, nodes):
@@ -100,8 +94,7 @@ def descendant_functionals(target, nodes):
 
     return [get_descendant_functional(node) for node in nodes if node != target]
 
-
-def get_strategy(strategy, dag):
+def get_strategy(strategy, dag, target):
     if strategy == 'budgeted_exp_design':
         base_dag = cd.DAG(nodes=set(dag.nodes), arcs=dag.arcs)
         dag_collection = [cd.DAG(nodes=set(dag.nodes), arcs=arcs) for arcs in base_dag.cpdag().all_dags()]
@@ -191,10 +184,50 @@ def simulate_(tup):
     dag = cd.DAG(nodes=set(gdag.nodes), arcs=gdag.arcs)
     print('SIMULATING FOR DAG: %d' % num)
     print('Folder:', folder)
-    print('Size of MEC:', len(dag.cpdag().all_dags()))
-    simulate(get_strategy(args.strategy, gdag), SIM_CONFIG, gdag, folder, save_gies=False)
+    mec_size = len(dag.cpdag().all_dags())
+    print('Size of MEC:', mec_size)
+    SIM_CONFIG = SimulationConfig(
+        starting_samples = starting_samples,
+        n_samples=args.samples,
+        n_batches=args.batches,
+        max_interventions=args.max_interventions,
+        strategy=args.strategy,
+        intervention_strength=args.intervention_strength,
+        target=targets[num], # A-ICP paper set a different target for each DAG
+        intervention_type=args.intervention_type if args.intervention_type is not None else 'gauss',
+        target_allowed=args.target_allowed != 0 if args.target_allowed is not None else True
+    )
+    return (mec_size,) + simulate(get_strategy(args.strategy, gdag, targets[num]), SIM_CONFIG, gdag, folder, save_gies=False, dag_num = num)
 
 
+print("\n\nNumber of workers: %d\n\n" % (cpu_count() - 1))
+    
 with Pool(cpu_count()-1) as p:
-    p.map(simulate_, zip(dags, folders, range(len(dags))))
+    result = p.map(simulate_, zip(dags, folders, range(len(dags))))
 
+# A-ICP paper: Store posterior results
+import pickle
+import time
+
+SIM_CONFIG = SimulationConfig(
+    starting_samples = starting_samples,
+    n_samples=args.samples,
+    n_batches=args.batches,
+    max_interventions=args.max_interventions,
+    strategy=args.strategy,
+    intervention_strength=args.intervention_strength,
+    target=0,
+    intervention_type=args.intervention_type if args.intervention_type is not None else 'gauss',
+    target_allowed=args.target_allowed != 0 if args.target_allowed is not None else True
+)
+
+filename = "pp_%d" % time.time()
+for (k,v) in vars(SIM_CONFIG).items():
+    filename += "_%s:%s" % (k,v)
+filename += ".pickle"
+
+print("Saving results in %s..." % filename, end=" ")
+
+pickle.dump(result, open(filename, "wb"))
+
+print("done.")
