@@ -1,8 +1,8 @@
 # ABCD vs A-ICP comparison
 
-This repository contains the code to reproduce the results comparing [ABCD](https://arxiv.org/abs/1902.10347) to A-ICP in the paper *Active Invariant Causal Prediction: Experiment Selection through Stability*, by Juan L Gamella and Christina Heinze-Deml.
+This repository contains the code to reproduce the results comparing [ABCD](https://arxiv.org/abs/1902.10347) to [A-ICP](https://github.com/juangamella/aicp) in the paper *Active Invariant Causal Prediction: Experiment Selection through Stability*, by Juan L Gamella and Christina Heinze-Deml.
 
-The repository is forked from [agrawalraj/active_learning](https://github.com/agrawalraj/active_learning), which contains the original implementation of [ABCD](https://arxiv.org/abs/1902.10347). It contains minor changes to the code to get it to run and retrieve results for the experiments comparing ABCD to [A-ICP](https://github.com/juangamella/aicp). Changes to the original code are marked with a comment: `#A-ICP paper: *`.
+The repository is forked from [agrawalraj/active_learning](https://github.com/agrawalraj/active_learning), which contains the original implementation of [ABCD](https://arxiv.org/abs/1902.10347). It contains minor changes to the code to get it to run and retrieve results for the experiments comparing ABCD to A-ICP. Changes to the original code are marked with a comment: `#A-ICP paper: *`.
 
 ## Dependencies
 
