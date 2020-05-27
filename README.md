@@ -1,6 +1,6 @@
 # ABCD vs A-ICP comparison
 
-This repo is forked from [agrawalraj/active_learning](https://github.com/agrawalraj/active_learning). It contains minor changes to the code to get it to run and retrieve results for the experiments comparing ABCD to [A-ICP](https://github.com/agrawalraj/juangamella/aicp). Changes to the original code are marked with the comment `# A-ICP paper:*`.
+This repo is forked from [agrawalraj/active_learning](https://github.com/agrawalraj/active_learning). It contains minor changes to the code to get it to run and retrieve results for the experiments comparing ABCD to [A-ICP](https://github.com/juangamella/aicp).
 
 ## Dependencies
 
@@ -36,7 +36,7 @@ pip install pyaml tqdm xarray causaldag
 
 ## Executing experiments
 
-The dataset used to run the experiments is generated through the code in the A-ICP [implementation](https://github.com/agrawalraj/juangamella/aicp) (see *Reproducing experiments* in the README). The dataset is a directory structure (here `dataset/`). Unfortunately, running the code renders the dataset unusable for other runs, so we have to copy it (I like to keep `dataset/` as the "master copy"). For the experiments (a total of 12), we copy it 12 times, plus one to check everything works:
+The dataset used to run the experiments is generated through the code in the A-ICP [implementation](https://github.com/juangamella/aicp) (see *Reproducing experiments* in the README). The dataset is a directory structure (here `dataset/`). Unfortunately, running the code renders the dataset unusable for other runs, so we have to copy it (I like to keep `dataset/` as the "master copy"). For the experiments (a total of 12), we copy it 12 times, plus one to check everything works:
 
 ```
 cd data/
@@ -94,4 +94,4 @@ The results are pickled into the `new` directory. The filenames contain a timest
 pp_1589260274_n_samples:500_n_batches:50_max_interventions:1_strategy:entropy_intervention_strength:5.0_starting_samples:100_target:0_intervention_type:gauss_target_allowed:True.pickle
 ```
 
-They can be plotted with the `plots_abcd.ipynb` notebook in the A-ICP [repository](https://github.com/agrawalraj/juangamella/aicp).
+They can be plotted with the `plots_abcd.ipynb` notebook in the A-ICP [repository](https://github.com/juangamella/aicp).
