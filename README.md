@@ -20,7 +20,7 @@ In an R terminal (also in `install.R`)
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install()
-BiocManager::install("Rgraphviz, RBGL")
+BiocManager::install("Rgraphviz", "RBGL")
 install.packages('pcalg', repos='http://cran.us.r-project.org')
 install.packages('gRbase', repos='http://cran.us.r-project.org')
 ```
@@ -61,7 +61,7 @@ I would then run a small experiment once to see if everything works:
 python run_experiments.py -n 10 -b 2 -k 1 --boot 20 -s 7 --folder dataset_test --strategy entropy --starting-samples 100
 ```
 
-If it doesn't crash after 1 minute, kill it and run the rest. To run the ABCD algorithm at 50, 100 and 1000 observational sample sizes, each for four rounds:
+If it doesn't crash after 1 minute, kill it and run the rest. To run the ABCD algorithm four times (with different inital random seeds) at 50, 100 and 1000 observational sample sizes:
 
 ```
 cd new/
