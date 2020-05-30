@@ -1,6 +1,0 @@
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-BiocManager::install(version = "3.10")
-BiocManager::install("Rgraphviz, RBGL")
-install.packages('pcalg', repos='http://cran.us.r-project.org')
-install.packages('gRbase', repos='http://cran.us.r-project.org')
