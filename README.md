@@ -16,7 +16,7 @@ The original installation procedure didn't work for us, and some python dependen
 
 ### Installing the R dependencies:
 
-In an R terminal (also in `install.R`)
+In an R terminal, run
 
 ```
 if (!requireNamespace("BiocManager", quietly = TRUE))
