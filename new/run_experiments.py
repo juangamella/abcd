@@ -201,7 +201,7 @@ def simulate_(tup):
     return (mec_size,) + simulate(get_strategy(args.strategy, gdag, targets[num]), SIM_CONFIG, gdag, folder, save_gies=False, dag_num = num)
 
 
-print("\n\nNumber of workers: %d\n\n" % (cpu_count() - 1))
+print("\n\nNumber of workers: %d\n\n" % (args.n_workers))
     
 with Pool(args.n_workers) as p:
     result = p.map(simulate_, zip(dags, folders, range(len(dags))))
