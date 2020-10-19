@@ -33,7 +33,7 @@ install.packages('gRbase', repos='http://cran.us.r-project.org')
 cd new/
 bash make_venv.sh
 source venv/bin/activate
-pip install pyaml tqdm xarray causaldag
+pip install pyaml tqdm xarray causaldag scipy
 ```
 
 ## Reproducing the results
