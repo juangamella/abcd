@@ -32,7 +32,7 @@ parser.add_argument('--strategy', type=str, help='Strategy to use')
 parser.add_argument('--target-allowed', type=int, help='Whether or not the specified target node can be intervened on')
 
 parser.add_argument('--starting-samples', type=int, help='Number of initial interventional samples') # A-ICP paper: To compare the effect of different observational sample sizes
-parser.add_argument('--n_workers', type=int, help='Size of the worker pool') # A-ICP paper: To force-set the size of the worker pool
+parser.add_argument('--n_workers', type=int, default=1, help='Size of the worker pool') # A-ICP paper: To force-set the size of the worker pool
 
 
 args = parser.parse_args()
