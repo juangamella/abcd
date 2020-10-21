@@ -1,7 +1,7 @@
 backcall==0.1.0
 bleach==2.1.4
 boto==2.49.0
-causaldag==0.1a37
+causaldag==0.1a133 # AICP Paper: Older/newer versions break the
 cycler==0.10.0
 dataclasses==0.6
 decorator==4.3.0
